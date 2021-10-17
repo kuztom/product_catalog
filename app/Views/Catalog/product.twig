@@ -1,37 +1,52 @@
 {% extends "app.twig" %}
 {% block content %}
 
-    catalog page
     <div class="container">
-        <h2>Catalog</h2>
-        <a href="/catalog/add">
-            <button class="button2" type="button">New Product</button>
+        <h2>Edit Product</h2>
+        <a href="/catalog">
+            <button class="button2" type="button">Back</button>
         </a>
-        <p>Click on product ID to edit or remove from list.</p>
-        <table class="table table-hover" >
-            <thead style="font-size: 13px">
-            <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Qty</th>
-                <th>Created</th>
-                <th>Edited</th>
-                <th>Author</th>
-            </tr>
-            </thead>
-            <tbody style="font-size: 13px">
+        <form method="post" action="/catalog/product/{{ product.id }}">
+            <table class="table table-hover">
+                <thead style="font-size: 13px">
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Qty</th>
+                    <th>Created</th>
+                    <th>Edited</th>
+                    <th>Author</th>
+                </tr>
+                </thead>
+                <tbody style="font-size: 13px">
                 <tr>
                     <td>{{ product.id }}</td>
-                    <td>{{ product.title }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>{{ product.qty }}</td>
+                    <td><label for="title"></label><input type="text" id="title" name="title"
+                                                          value="{{ product.title }}"
+                                                          class="InputStyle" required></td>
+                    </td>
+                    <td><select name="categoryOption">
+                            {% for category in categories.categories %}
+                                <option selected="{{ product.category }}">{{ category.title }}</option>
+                            {% endfor %}
+                        </select></td>
+                    <td><label for="qty"> </label><input type="number" id="qty" name="qty" value="{{ product.qty }}"
+                                                         class="InputStyle" required></td>
                     <td>{{ product.createdAt }}</td>
                     <td>{{ product.editedAt }}</td>
                     <td>{{ product.createdBy }}</td>
                 </tr>
-            </tbody>
-        </table>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><input type="submit" class="button1" name="action" value="Save"
+                               onclick="return confirm('Save changes?')"></td>
+                    <td><input type="submit" class="button1" name="action" value="Delete"
+                               onclick="return confirm('Delete product?')"></td>
+                </tr>
+                </tbody>
+            </table>
     </div>
 
 

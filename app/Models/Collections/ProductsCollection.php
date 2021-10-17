@@ -10,8 +10,7 @@ class ProductsCollection
 
     public function __construct(array $products = [])
     {
-        foreach ($products as $product)
-        {
+        foreach ($products as $product) {
             $this->add($product);
         }
     }

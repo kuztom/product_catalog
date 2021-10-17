@@ -7,7 +7,7 @@ use Twig\Loader\FilesystemLoader;
 
 require_once 'vendor/autoload.php';
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
 
     $r->addRoute('GET', '/', 'MainController@index');
     $r->addRoute('GET', '/register', 'UsersController@registerForm');
@@ -17,6 +17,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
     $r->addRoute('GET', '/catalog', 'ProductsController@catalog');
     $r->addRoute('GET', '/catalog/product/{id}', 'ProductsController@productForm');
+    $r->addRoute('POST', '/catalog/product/{id}', 'ProductsController@editProduct');
     $r->addRoute('GET', '/catalog/add', 'ProductsController@addForm');
     $r->addRoute('POST', '/catalog/add', 'ProductsController@save');
     $r->addRoute('GET', '/catalog/category', 'CategoriesController@categoryForm');
@@ -61,8 +62,7 @@ switch ($routeInfo[0]) {
 
         $response = $controller->$method($vars);
 
-        if ($response instanceof ViewRender)
-        {
+        if ($response instanceof ViewRender) {
             echo $templateEngine->render($response->getTemplate(), $response->getVars());
         }
 

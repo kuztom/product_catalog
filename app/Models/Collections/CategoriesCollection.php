@@ -10,8 +10,7 @@ class CategoriesCollection
 
     public function __construct(array $categories = [])
     {
-        foreach ($categories as $category)
-        {
+        foreach ($categories as $category) {
             $this->add($category);
         }
     }

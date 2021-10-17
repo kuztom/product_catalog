@@ -51,16 +51,43 @@ class ProductsController
 
         $this->productsRepository->add($product);
 
-        return new ViewRender('Catalog/add.twig');
+        return $this->addForm();
     }
 
     public function productForm(array $vars): ViewRender
     {
         $id = $vars['id'];
         $product = $this->productsRepository->getOne($id);
+        $categories = $this->categoriesRepository->getAll();
         return new ViewRender('Catalog/product.twig', [
-            'product' => $product
+            'product' => $product,
+            'categories' => $categories
         ]);
     }
+
+    public function editProduct(array $vars)
+    {
+
+        $id = $vars['id'];
+
+        if ($_POST['action'] === 'Save') {
+            $this->productsRepository->saveEdit($id);
+
+            $product = $this->productsRepository->getOne($id);
+            $categories = $this->categoriesRepository->getAll();
+
+            return new ViewRender('Catalog/product.twig', [
+                'product' => $product,
+                'categories' => $categories
+            ]);
+        }
+
+        if ($_POST['action'] === 'Delete') {
+            $this->productsRepository->delete($id);
+            return $this->catalog();
+        }
+
+    }
+
 
 }

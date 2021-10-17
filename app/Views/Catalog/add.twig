@@ -28,12 +28,13 @@
                                                                class="InputStyle" required></td>
                         <td><select name="categoryOption">
                                 {% for category in categories.categories %}
-                                <option>{{ category.title }}</option>
+                                    <option>{{ category.title }}</option>
                                 {% endfor %}
                             </select></td>
 
                         <td><label for="qty"> </label><input type="number" id="qty" name="qty"
-                                                               class="InputStyle" required></td></td>
+                                                             class="InputStyle" required></td>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

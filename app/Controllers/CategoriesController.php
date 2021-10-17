@@ -27,13 +27,13 @@ class CategoriesController
         $category = new Category(
             $id->id(),
             $_POST['title']
-            );
+        );
         $this->categoriesRepository->add($category);
 
         $categories = $this->categoriesRepository->getAll();
 
         return new ViewRender('Catalog/add.twig', [
-            'categories'=>$categories
+            'categories' => $categories
         ]);
     }
 }

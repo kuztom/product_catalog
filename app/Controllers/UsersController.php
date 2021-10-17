@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Repositories\MysqlCategoriesRepository;
+use App\Repositories\MysqlProductsRepository;
 use App\Repositories\MysqlUsersRepository;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
@@ -10,10 +12,12 @@ use Godruoyi\Snowflake\Snowflake;
 class UsersController
 {
     private MysqlUsersRepository $usersRepository;
+    private MysqlProductsRepository $productsRepository;
 
     public function __construct()
     {
         $this->usersRepository = new MysqlUsersRepository();
+        $this->productsRepository = new MysqlProductsRepository();
     }
 
     public function index(): ViewRender
@@ -30,9 +34,12 @@ class UsersController
     public function login()
     {
         $user = $this->usersRepository->find($_POST['username']);
-
+        $products = $this->productsRepository->getAll();
         if ($user !== null && password_verify($_POST['password'], $user->getPassword())) {
-            return new ViewRender('Catalog/catalog.twig', ['user' => $user]);
+            return new ViewRender('Catalog/catalog.twig', [
+                'user' => $user,
+                'products' => $products
+            ]);
         } else {
             return new ViewRender('Users/login.twig');
         }

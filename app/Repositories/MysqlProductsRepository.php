@@ -45,6 +45,26 @@ class MysqlProductsRepository implements ProductsRepository
         ]);
     }
 
+    public function saveEdit(string $id): void
+    {
+        $sql = "UPDATE products SET title=?, category=?, qty=?, edited_at=?, created_by=? WHERE id = '$id'";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            $_POST['title'],
+            $_POST['categoryOption'],
+            $_POST['qty'],
+            date('Y-m-d H:i:s'),
+            "edited"
+        ]);
+    }
+
+    public function delete(string $id): void
+    {
+        $sql = "DELETE FROM products WHERE id = '$id'";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+    }
+
     public function getAll(): ProductsCollection
     {
         $sql = "SELECT * FROM products";

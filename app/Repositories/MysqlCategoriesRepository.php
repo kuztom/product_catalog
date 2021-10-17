@@ -45,9 +45,9 @@ class MysqlCategoriesRepository implements CategoriesRepository
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $collection = new CategoriesCollection();
 
-        foreach ($categories as $category){
+        foreach ($categories as $category) {
             $collection->add(new Category(
-               $category['id'],
+                $category['id'],
                 $category['title']
             ));
         }
