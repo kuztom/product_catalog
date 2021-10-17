@@ -54,6 +54,6 @@ class UsersController
 
         $this->usersRepository->add($user);
 
-        header('Location: /login');
+        return new ViewRender('Users/login.twig');
     }
 }

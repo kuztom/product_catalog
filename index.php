@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Europe/Riga');
 
 use App\ViewRender;
 use Twig\Environment;
@@ -9,13 +10,17 @@ require_once 'vendor/autoload.php';
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
     $r->addRoute('GET', '/', 'MainController@index');
-    $r->addRoute('POST', '/login', 'UsersController@login');
-    $r->addRoute('GET', '/login', 'UsersController@loginForm');
-    $r->addRoute('GET', '/catalog', 'ProductsController@catalog');
-    $r->addRoute('POST', '/catalog', 'ProductsController@catalog');
     $r->addRoute('GET', '/register', 'UsersController@registerForm');
     $r->addRoute('POST', '/register', 'UsersController@register');
+    $r->addRoute('POST', '/catalog', 'UsersController@login');
+    $r->addRoute('GET', '/login', 'UsersController@loginForm');
 
+    $r->addRoute('GET', '/catalog', 'ProductsController@catalog');
+    $r->addRoute('GET', '/catalog/product/{id}', 'ProductsController@productForm');
+    $r->addRoute('GET', '/catalog/add', 'ProductsController@addForm');
+    $r->addRoute('POST', '/catalog/add', 'ProductsController@save');
+    $r->addRoute('GET', '/catalog/category', 'CategoriesController@categoryForm');
+    $r->addRoute('POST', '/catalog/category', 'CategoriesController@save');
 
 });
 
@@ -53,7 +58,6 @@ switch ($routeInfo[0]) {
 
         $controller = 'App\Controllers\\' . $controller;
         $controller = new $controller();
-        //$controller->$method($vars);
 
         $response = $controller->$method($vars);
 

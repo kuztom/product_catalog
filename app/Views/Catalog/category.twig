@@ -1,0 +1,20 @@
+{% extends "app.twig" %}
+{% block content %}
+
+    <div class="bg text-center">
+        <div class="container">
+            <p class="secondLine">Create New Category</p>
+
+            <form method="post" action="/catalog/add">
+                <p><a href="/catalog">
+                        <button class="button2" type="button"><-</button>
+                    </a>
+                    <input type="submit" class="button1" value="Save"></p>
+                <label for="title"> </label><input type="text" id="title" name="title"
+                                                   class="InputStyle" required>
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}
