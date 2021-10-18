@@ -54,7 +54,7 @@ class MysqlProductsRepository implements ProductsRepository
             $_POST['categoryOption'],
             $_POST['qty'],
             date('Y-m-d H:i:s'),
-            "edited"
+            $_SESSION['username']
         ]);
     }
 

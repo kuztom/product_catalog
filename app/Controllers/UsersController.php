@@ -34,8 +34,10 @@ class UsersController
     public function login()
     {
         $user = $this->usersRepository->find($_POST['username']);
-        $products = $this->productsRepository->getAll();
+
         if ($user !== null && password_verify($_POST['password'], $user->getPassword())) {
+            $_SESSION['username'] = $user->getUsername();
+            $products = $this->productsRepository->getAll();
             return new ViewRender('Catalog/catalog.twig', [
                 'user' => $user,
                 'products' => $products
@@ -43,6 +45,12 @@ class UsersController
         } else {
             return new ViewRender('Users/login.twig');
         }
+    }
+
+    public function logout()
+    {
+        session_unset();
+        return $this->loginForm();
     }
 
     public function registerForm(): ViewRender

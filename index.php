@@ -1,4 +1,5 @@
 <?php
+session_start();
 date_default_timezone_set('Europe/Riga');
 
 use App\ViewRender;
@@ -14,6 +15,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('POST', '/register', 'UsersController@register');
     $r->addRoute('POST', '/catalog', 'UsersController@login');
     $r->addRoute('GET', '/login', 'UsersController@loginForm');
+    $r->addRoute('GET', '/logout', 'UsersController@logout');
 
     $r->addRoute('GET', '/catalog', 'ProductsController@catalog');
     $r->addRoute('GET', '/catalog/product/{id}', 'ProductsController@productForm');
@@ -39,6 +41,7 @@ $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
 $loader = new FilesystemLoader('app/Views');
 $templateEngine = new Environment($loader, []);
+$templateEngine->addGlobal('session', $_SESSION);
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
