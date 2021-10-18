@@ -28,6 +28,12 @@ class UsersController
     public function loginForm(): ViewRender
     {
 
+        if(isset($_SESSION['username'])) {
+            $products = $this->productsRepository->getAll();
+        return new ViewRender('Catalog/catalog.twig', [
+            'products' => $products
+        ]); }
+
         return new ViewRender('Users/login.twig');
     }
 
@@ -55,6 +61,12 @@ class UsersController
 
     public function registerForm(): ViewRender
     {
+        if(isset($_SESSION['username'])) {
+            $products = $this->productsRepository->getAll();
+            return new ViewRender('Catalog/catalog.twig', [
+                'products' => $products
+            ]); }
+
         return new ViewRender('Users/register.twig');
     }
 

@@ -45,7 +45,7 @@ class ProductsController
             $_POST['categoryOption'],
             $_POST['qty'],
             date('Y-m-d H:i:s'),
-            "username",
+            $_SESSION['username'],
             date('Y-m-d H:i:s')
         );
 
