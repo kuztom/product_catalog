@@ -13,6 +13,9 @@
                     <input type="submit" class="button1" value="Save">
                     <a href="/catalog/category">
                         <button class="button2" type="button">New Category</button>
+                    </a>
+                    <a href="/catalog/tag">
+                        <button class="button2" type="button">New Tag</button>
                     </a></p>
                 <table align="center" class="table" style="width: 400px;">
                     <thead>
@@ -36,6 +39,13 @@
                                                              class="InputStyle" required></td>
                         </td>
                     </tr>
+                    <tr><td>
+                            {% for tag in tags.tags %}
+                                <input type="checkbox" id="{{ tag.title }}" name="{{ tag.title }}">
+                                <label for="{{ tag.title }}">{{ tag.title }}</label> <br>
+                            {% endfor %}
+                            </select>
+                        </td></tr>
                     </tbody>
                 </table>
 

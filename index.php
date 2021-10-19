@@ -11,6 +11,7 @@ require_once 'vendor/autoload.php';
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
 
     $r->addRoute('GET', '/', 'MainController@index');
+
     $r->addRoute('GET', '/register', 'UsersController@registerForm');
     $r->addRoute('POST', '/register', 'UsersController@register');
     $r->addRoute('POST', '/catalog', 'UsersController@login');
@@ -18,12 +19,17 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/logout', 'UsersController@logout');
 
     $r->addRoute('GET', '/catalog', 'ProductsController@catalog');
+    $r->addRoute('POST', '/catalog/filter', 'ProductsController@filterCatalog');
     $r->addRoute('GET', '/catalog/product/{id}', 'ProductsController@productForm');
     $r->addRoute('POST', '/catalog/product/{id}', 'ProductsController@editProduct');
     $r->addRoute('GET', '/catalog/add', 'ProductsController@addForm');
     $r->addRoute('POST', '/catalog/add', 'ProductsController@save');
+
     $r->addRoute('GET', '/catalog/category', 'CategoriesController@categoryForm');
     $r->addRoute('POST', '/catalog/category', 'CategoriesController@save');
+
+    $r->addRoute('GET', '/catalog/tag', 'TagsController@tagsForm');
+    $r->addRoute('POST', '/catalog/tag', 'TagsController@save');
 
 });
 

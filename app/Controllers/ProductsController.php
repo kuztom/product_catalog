@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Product;
 use App\Repositories\MysqlCategoriesRepository;
 use App\Repositories\MysqlProductsRepository;
+use App\Repositories\MysqlTagsRepository;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
 
@@ -12,27 +13,48 @@ class ProductsController
 {
     private MysqlProductsRepository $productsRepository;
     private MysqlCategoriesRepository $categoriesRepository;
+    private MysqlTagsRepository $tagsRepository;
 
     public function __construct()
     {
         $this->productsRepository = new MysqlProductsRepository();
         $this->categoriesRepository = new MysqlCategoriesRepository();
+        $this->tagsRepository = new MysqlTagsRepository();
     }
 
     public function catalog(): ViewRender
     {
         $products = $this->productsRepository->getAll();
+        $categories = $this->categoriesRepository->getAll();
+        $tags = $this->tagsRepository->getAll();
 
         return new ViewRender('Catalog/catalog.twig', [
-            'products' => $products
+            'products' => $products,
+            'categories' => $categories,
+            'tags' => $tags
+        ]);
+    }
+
+    public function filterCatalog(): ViewRender
+    {
+        $products = $this->productsRepository->getCategory($_POST['categoryOption']);
+        $categories = $this->categoriesRepository->getAll();
+        $tags = $this->tagsRepository->getAll();
+
+        return new ViewRender('Catalog/catalog.twig', [
+            'products' => $products,
+            'categories' => $categories,
+            'tags' => $tags
         ]);
     }
 
     public function addForm(): ViewRender
     {
         $categories = $this->categoriesRepository->getAll();
+        $tags = $this->tagsRepository->getAll();
         return new ViewRender('Catalog/add.twig', [
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ]);
     }
 
@@ -67,7 +89,6 @@ class ProductsController
 
     public function editProduct(array $vars)
     {
-
         $id = $vars['id'];
 
         if ($_POST['action'] === 'Save') {

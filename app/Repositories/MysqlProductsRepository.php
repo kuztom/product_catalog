@@ -105,4 +105,29 @@ class MysqlProductsRepository implements ProductsRepository
             $product['edited_at'],
         );
     }
+
+    public function getCategory(string $category): ?ProductsCollection
+    {
+        $sql = "SELECT * FROM products WHERE category = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([$category]);
+
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $collection = new ProductsCollection();
+
+        foreach ($products as $product) {
+            $collection->add(new Product(
+                $product['id'],
+                $product['title'],
+                $product['category'],
+                $product['qty'],
+                $product['created_at'],
+                $product['created_by'],
+                $product['edited_at'],
+            ));
+        }
+
+        return $collection;
+    }
+
 }

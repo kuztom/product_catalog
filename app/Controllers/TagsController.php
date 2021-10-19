@@ -2,35 +2,37 @@
 
 namespace App\Controllers;
 
-use App\Models\Category;
+use App\Models\Tag;
 use App\Repositories\MysqlCategoriesRepository;
+use App\Repositories\MysqlTagsRepository;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
 
-class CategoriesController
+class TagsController
 {
+    private MysqlTagsRepository $tagsRepository;
     private MysqlCategoriesRepository $categoriesRepository;
 
     public function __construct()
     {
+        $this->tagsRepository = new MysqlTagsRepository();
         $this->categoriesRepository = new MysqlCategoriesRepository();
     }
 
-    public function categoryForm(): ViewRender
+    public function tagsForm(): ViewRender
     {
-        return new ViewRender('Catalog/category.twig');
+        return new ViewRender('Catalog/tag.twig');
     }
 
     public function save(): ViewRender
     {
         $id = new Snowflake();
-        $category = new Category(
+        $tag = new Tag(
             $id->id(),
             $_POST['title']
         );
-        $this->categoriesRepository->add($category);
+        $this->tagsRepository->add($tag);
 
-
-        return new ViewRender('Catalog/category.twig');
+        return new ViewRender('Catalog/tag.twig');
     }
 }

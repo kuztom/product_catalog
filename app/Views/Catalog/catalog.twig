@@ -3,9 +3,22 @@
 
     <div class="container">
         <h2>Catalog</h2>
-        <a href="/catalog/add">
-            <button class="button2" type="button">New Product</button>
-        </a>
+
+        <form method="post" action="/catalog/filter">
+            <a href="/catalog/add">
+                <button class="button2" type="button">New Product</button>
+            </a> &nbsp;&nbsp;&nbsp; Category:
+            <select name="categoryOption">
+                {% for category in categories.categories %}
+                    <option>{{ category.title }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="button2" value="Show">
+            <a href="/catalog">
+                <button class="button2" type="button">Show All</button>
+            </a></p>
+
+        </form>
         <p>Click on product ID to edit or remove from list.</p>
         <table class="table table-hover">
             <thead style="font-size: 13px">
