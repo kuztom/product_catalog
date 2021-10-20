@@ -2,11 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Auth;
 use App\Models\Product;
 use App\Repositories\MysqlCategoriesRepository;
 use App\Repositories\MysqlProductsRepository;
 use App\Repositories\MysqlTagsRepository;
 use App\Validation\FormValidationException;
+use App\Validation\FormsValidator;
 use App\Validation\ProductsValidator;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
@@ -16,6 +18,7 @@ class ProductsController
     private MysqlProductsRepository $productsRepository;
     private MysqlCategoriesRepository $categoriesRepository;
     private MysqlTagsRepository $tagsRepository;
+    private FormsValidator $formValidator;
     private ProductsValidator $productsValidator;
 
     public function __construct()
@@ -23,23 +26,25 @@ class ProductsController
         $this->productsRepository = new MysqlProductsRepository();
         $this->categoriesRepository = new MysqlCategoriesRepository();
         $this->tagsRepository = new MysqlTagsRepository();
+        $this->formValidator = new FormsValidator();
         $this->productsValidator = new ProductsValidator();
+    }
+
+    public function catalogRedirect(): ViewRender
+    {
+        $products = $this->productsRepository->getAll();
+        $categories = $this->categoriesRepository->getAll();
+        $tags = $this->tagsRepository->getAll();
+
+        return ViewRender::catalog($products, $categories, $tags);
     }
 
     public function catalog()
     {
-        if (isset($_SESSION['username'])) {
-            $products = $this->productsRepository->getAll();
-            $categories = $this->categoriesRepository->getAll();
-            $tags = $this->tagsRepository->getAll();
-
-            return new ViewRender('Catalog/catalog.twig', [
-                'products' => $products,
-                'categories' => $categories,
-                'tags' => $tags
-            ]);
+        if (Auth::loggedIn()) {
+            return $this->catalogRedirect();
         }
-        header('Location: /login');
+        return ViewRender::login();
     }
 
     public function filterCatalog(): ViewRender
@@ -48,31 +53,24 @@ class ProductsController
         $categories = $this->categoriesRepository->getAll();
         $tags = $this->tagsRepository->getAll();
 
-        return new ViewRender('Catalog/catalog.twig', [
-            'products' => $products,
-            'categories' => $categories,
-            'tags' => $tags
-        ]);
+        return ViewRender::catalog($products, $categories, $tags);
     }
 
     public function addForm()
     {
-        if (isset($_SESSION['username'])) {
+        if (Auth::loggedIn()) {
             $categories = $this->categoriesRepository->getAll();
             $tags = $this->tagsRepository->getAll();
-            return new ViewRender('Catalog/add.twig', [
-                'categories' => $categories,
-                'tags' => $tags
-            ]);
+            return ViewRender::newProduct($categories, $tags);
         }
-        header('Location: /login');
+        return ViewRender::login();
     }
 
     public function save()
     {
-
         try {
             $this->productsValidator->validate($_POST);
+            $this->formValidator->validate($_POST);
             $id = new Snowflake();
             $product = new Product(
                 $id->id(),
@@ -89,6 +87,7 @@ class ProductsController
             return $this->addForm();
         } catch (FormValidationException $exception) {
             $_SESSION['errors'] = $this->productsValidator->getErrors();
+            $_SESSION['errors'] = $this->formValidator->getErrors();
             $categories = $this->categoriesRepository->getAll();
             $tags = $this->tagsRepository->getAll();
             return new ViewRender('Catalog/add.twig', [
@@ -100,21 +99,18 @@ class ProductsController
 
     public function productForm(array $vars)
     {
-        if (isset($_SESSION['username'])) {
+        if (Auth::loggedIn()) {
             $id = $vars['id'];
             $product = $this->productsRepository->getOne($id);
             $categories = $this->categoriesRepository->getAll();
-            return new ViewRender('Catalog/product.twig', [
-                'product' => $product,
-                'categories' => $categories
-            ]);
+            return ViewRender::product($product, $categories);
         }
-        header('Location: /login');
+        return ViewRender::login();
     }
 
     public function editProduct(array $vars)
     {
-        if (isset($_SESSION['username'])) {
+        if (Auth::loggedIn()) {
             $id = $vars['id'];
 
             if ($_POST['action'] === 'Save') {
@@ -123,10 +119,7 @@ class ProductsController
                 $product = $this->productsRepository->getOne($id);
                 $categories = $this->categoriesRepository->getAll();
 
-                return new ViewRender('Catalog/product.twig', [
-                    'product' => $product,
-                    'categories' => $categories
-                ]);
+                return ViewRender::product($product, $categories);
             }
 
             if ($_POST['action'] === 'Delete') {
@@ -134,8 +127,7 @@ class ProductsController
                 return $this->catalog();
             }
         }
-        header('Location: /login');
+        return ViewRender::login();
     }
-
 
 }

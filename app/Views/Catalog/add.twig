@@ -1,11 +1,11 @@
-{% extends "app.twig" %}
+{% extends "main.twig" %}
 {% block content %}
 
     <div class="bg text-center">
         <div class="container">
             <p class="secondLine">Create New Product</p>
 
-            <form method="post" action="/catalog/add">
+            <form method="post" action="/catalog/new">
 
                 <p><a href="/catalog">
                         <button class="button2" type="button"><-</button>
@@ -22,7 +22,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Category</th>
-                        <th>Qty</th>
+                        <th>Quantity</th>
                     </tr>
                     </thead>
                     <tbody>

@@ -4,7 +4,7 @@ namespace App\Validation;
 
 use App\Validation\FormValidationException;
 
-class TagsValidator
+class FormsValidator
 {
     private array $errors = [];
 
@@ -22,7 +22,17 @@ class TagsValidator
         }
 
         if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $postData['title'])) {
-            $this->errors['title_' . $errorCount] = 'For tag title use only letters or numbers!';
+            $this->errors['title_' . $errorCount] = 'Dont use any special characters in input fields!';
+            $errorCount++;
+        }
+
+        if (is_numeric($postData['title'])) {
+            $this->errors['title_' . $errorCount] = 'You cant use only numbers in title!';
+            $errorCount++;
+        }
+
+        if (is_numeric($postData['title'])) {
+            $this->errors['title_' . $errorCount] = 'You cant use only numbers in title!';
             $errorCount++;
         }
 

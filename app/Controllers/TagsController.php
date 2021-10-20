@@ -2,30 +2,31 @@
 
 namespace App\Controllers;
 
+use App\Auth;
 use App\Models\Tag;
 use App\Repositories\MysqlTagsRepository;
 use App\Validation\FormValidationException;
-use App\Validation\TagsValidator;
+use App\Validation\FormsValidator;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
 
 class TagsController
 {
     private MysqlTagsRepository $tagsRepository;
-    private TagsValidator $tagsValidator;
+    private FormsValidator $tagsValidator;
 
     public function __construct()
     {
         $this->tagsRepository = new MysqlTagsRepository();
-        $this->tagsValidator = new TagsValidator();
+        $this->tagsValidator = new FormsValidator();
     }
 
     public function tagsForm()
     {
-        if (isset($_SESSION['username'])) {
+        if (Auth::loggedIn()) {
             return new ViewRender('Catalog/tag.twig');
         }
-        header('Location: /login');
+        return ViewRender::login();
     }
 
     public function save()

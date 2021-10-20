@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Category;
 use App\Models\Collections\ProductsCollection;
 use App\Models\Product;
 use PDO;

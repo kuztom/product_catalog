@@ -2,6 +2,7 @@
 session_start();
 date_default_timezone_set('Europe/Riga');
 
+use App\Middlewares\AuthorizedMiddleware;
 use App\ViewRender;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -10,7 +11,7 @@ require_once 'vendor/autoload.php';
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
 
-    $r->addRoute('GET', '/', 'MainController@index');
+    $r->addRoute('GET', '/', 'UsersController@index');
 
     $r->addRoute('GET', '/register', 'UsersController@registerForm');
     $r->addRoute('POST', '/register', 'UsersController@register');
@@ -63,6 +64,17 @@ switch ($routeInfo[0]) {
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
         // ... call $handler with $vars
+
+        $middlewares = [
+            'ProductsController@catalog' => [AuthorizedMiddleware::class],
+            'UsersController@login' => [AuthorizedMiddleware::class],
+        ];
+
+        if (array_key_exists($handler, $middlewares)) {
+            foreach ($middlewares[$handler] as $middleware) {
+                (new $middleware)->handle();
+            }
+        }
 
         [$controller, $method] = explode('@', $handler);
 

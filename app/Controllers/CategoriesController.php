@@ -2,36 +2,37 @@
 
 namespace App\Controllers;
 
+use App\Auth;
 use App\Models\Category;
 use App\Repositories\MysqlCategoriesRepository;
-use App\Validation\CategoriesValidator;
 use App\Validation\FormValidationException;
+use App\Validation\FormsValidator;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
 
 class CategoriesController
 {
     private MysqlCategoriesRepository $categoriesRepository;
-    private CategoriesValidator $categoriesValidator;
+    private FormsValidator $formValidator;
 
     public function __construct()
     {
         $this->categoriesRepository = new MysqlCategoriesRepository();
-        $this->categoriesValidator = new CategoriesValidator();
+        $this->formValidator = new FormsValidator();
     }
 
     public function categoryForm()
     {
-        if (isset($_SESSION['username'])) {
+        if (Auth::loggedIn()) {
             return new ViewRender('Catalog/category.twig');
         }
-        header('Location: /login');
+        return ViewRender::login();
     }
 
     public function save(): ViewRender
     {
         try {
-            $this->categoriesValidator->validate($_POST);
+            $this->formValidator->validate($_POST);
             $id = new Snowflake();
             $category = new Category(
                 $id->id(),
@@ -42,7 +43,7 @@ class CategoriesController
             return new ViewRender('Catalog/category.twig');
 
         } catch (FormValidationException $exception) {
-            $_SESSION['errors'] = $this->categoriesValidator->getErrors();
+            $_SESSION['errors'] = $this->formValidator->getErrors();
             return new ViewRender('Catalog/category.twig', ['errors' => $_SESSION['errors']]);
         }
     }
