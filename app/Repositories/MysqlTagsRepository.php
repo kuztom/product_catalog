@@ -54,4 +54,15 @@ class MysqlTagsRepository implements TagsRepository
 
         return $collection;
     }
+
+    public function productsTags(string $productId, string $tagId)
+    {
+        $sql = "INSERT INTO products_tags (product_id, tag_id) 
+                VALUES (?,?)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute([
+            $tag->getId(),
+            $tag->getTitle(),
+        ]);
+    }
 }

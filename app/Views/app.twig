@@ -9,14 +9,20 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <div class="container">
-    {% if session.username is defined %}
-        <small>{{ session.username }}</small>
-        <a href="/logout"> <small>(Logout)</small></a>
-    {% endif %}
+        {% if session.username is defined %}
+            <small>{{ session.username }}</small>
+            <a href="/logout"> <small>(Logout)</small></a>
+        {% endif %}
+
+
     </div>
     <title>Product Catalog</title>
 </head>
 <body>
+
+<div class="container">
+    <p><small style="color: red">{{ errors|join('<br/>')|raw }}</small></p>
+</div>
 
 {% block content %}
 {% endblock %}

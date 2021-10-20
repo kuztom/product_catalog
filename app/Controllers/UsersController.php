@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Repositories\MysqlCategoriesRepository;
 use App\Repositories\MysqlProductsRepository;
 use App\Repositories\MysqlUsersRepository;
 use App\ViewRender;
@@ -28,11 +27,12 @@ class UsersController
     public function loginForm(): ViewRender
     {
 
-        if(isset($_SESSION['username'])) {
+        if (isset($_SESSION['username'])) {
             $products = $this->productsRepository->getAll();
-        return new ViewRender('Catalog/catalog.twig', [
-            'products' => $products
-        ]); }
+            return new ViewRender('Catalog/catalog.twig', [
+                'products' => $products
+            ]);
+        }
 
         return new ViewRender('Users/login.twig');
     }
@@ -56,22 +56,25 @@ class UsersController
     public function logout()
     {
         session_unset();
+        session_destroy();
         return $this->loginForm();
     }
 
     public function registerForm(): ViewRender
     {
-        if(isset($_SESSION['username'])) {
+        if (isset($_SESSION['username'])) {
             $products = $this->productsRepository->getAll();
             return new ViewRender('Catalog/catalog.twig', [
                 'products' => $products
-            ]); }
+            ]);
+        }
 
         return new ViewRender('Users/register.twig');
     }
 
     public function register()
     {
+
         $id = new Snowflake();
         $user = new User(
             $id->id(),

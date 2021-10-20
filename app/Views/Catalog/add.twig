@@ -39,13 +39,14 @@
                                                              class="InputStyle" required></td>
                         </td>
                     </tr>
-                    <tr><td>
+                    <tr>
+                        <td align="left">
                             {% for tag in tags.tags %}
-                                <input type="checkbox" id="{{ tag.title }}" name="{{ tag.title }}">
-                                <label for="{{ tag.title }}">{{ tag.title }}</label> <br>
+                                <input type="checkbox" name="product_tags[]" value="{{ tag.title }}"> {{ tag.title }}
+                                <br>
                             {% endfor %}
-                            </select>
-                        </td></tr>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
 

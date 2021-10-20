@@ -74,6 +74,7 @@ switch ($routeInfo[0]) {
         if ($response instanceof ViewRender) {
             echo $templateEngine->render($response->getTemplate(), $response->getVars());
         }
-
         break;
 }
+
+unset($_SESSION['errors']);
