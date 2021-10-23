@@ -6,19 +6,19 @@ use App\Auth;
 use App\Models\Tag;
 use App\Repositories\MysqlTagsRepository;
 use App\Validation\FormValidationException;
-use App\Validation\FormsValidator;
+use App\Validation\TitleFormsValidator;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
 
 class TagsController
 {
     private MysqlTagsRepository $tagsRepository;
-    private FormsValidator $tagsValidator;
+    private TitleFormsValidator $tagsValidator;
 
     public function __construct()
     {
         $this->tagsRepository = new MysqlTagsRepository();
-        $this->tagsValidator = new FormsValidator();
+        $this->tagsValidator = new TitleFormsValidator();
     }
 
     public function tagsForm()

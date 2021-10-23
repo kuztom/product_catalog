@@ -23,8 +23,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('POST', '/catalog/filter', 'ProductsController@filterCatalog');
     $r->addRoute('GET', '/catalog/product/{id}', 'ProductsController@productForm');
     $r->addRoute('POST', '/catalog/product/{id}', 'ProductsController@editProduct');
-    $r->addRoute('GET', '/catalog/add', 'ProductsController@addForm');
-    $r->addRoute('POST', '/catalog/add', 'ProductsController@save');
+    $r->addRoute('GET', '/catalog/new', 'ProductsController@addForm');
+    $r->addRoute('POST', '/catalog/new', 'ProductsController@save');
 
     $r->addRoute('GET', '/catalog/category', 'CategoriesController@categoryForm');
     $r->addRoute('POST', '/catalog/category', 'CategoriesController@save');
@@ -65,16 +65,16 @@ switch ($routeInfo[0]) {
         $vars = $routeInfo[2];
         // ... call $handler with $vars
 
-        $middlewares = [
-            'ProductsController@catalog' => [AuthorizedMiddleware::class],
-            'UsersController@login' => [AuthorizedMiddleware::class],
-        ];
-
-        if (array_key_exists($handler, $middlewares)) {
-            foreach ($middlewares[$handler] as $middleware) {
-                (new $middleware)->handle();
-            }
-        }
+//        $middlewares = [
+//            'ProductsController@catalog' => [AuthorizedMiddleware::class],
+//            'UsersController@login' => [AuthorizedMiddleware::class],
+//        ];
+//
+//        if (array_key_exists($handler, $middlewares)) {
+//            foreach ($middlewares[$handler] as $middleware) {
+//                (new $middleware)->handle();
+//            }
+//        }
 
         [$controller, $method] = explode('@', $handler);
 

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Collections\ProductsCollection;
 use App\Models\Product;
+use Godruoyi\Snowflake\Snowflake;
 use PDO;
 
 require_once 'config.php';
@@ -42,6 +43,19 @@ class MysqlProductsRepository implements ProductsRepository
             $product->getCreatedBy(),
             $product->getEditedAt(),
         ]);
+    }
+
+    public function saveProductTags(Product $product): void
+    {
+        foreach ($product->getTags() as $tagId) {
+            $sql = "INSERT INTO products_tags (product_id, tag_id)
+                VALUES (?,?)";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([
+                $product->getId(),
+                $tagId
+            ]);
+        }
     }
 
     public function saveEdit(string $id): void

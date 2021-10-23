@@ -8,6 +8,7 @@ class Product
     private string $title;
     private string $category;
     private int $qty;
+    private array $tags;
     private string $createdAt;
     private string $createdBy;
     private string $editedAt;
@@ -20,12 +21,14 @@ class Product
         ?string $createdAt,
         ?string $createdBy,
         ?string $editedAt,
+        ?array $tags = [],
     )
     {
         $this->id = $id;
         $this->title = $title;
         $this->category = $category;
         $this->qty = $qty;
+        $this->tags = $tags;
         $this->createdAt = $createdAt;
         $this->createdBy = $createdBy;
         $this->editedAt = $editedAt;
@@ -49,6 +52,11 @@ class Product
     public function getQty(): int
     {
         return $this->qty;
+    }
+
+    public function getTags(): ?array
+    {
+        return $this->tags;
     }
 
     public function getCreatedAt(): string

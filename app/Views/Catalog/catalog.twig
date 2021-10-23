@@ -5,18 +5,40 @@
         <h2>Catalog</h2>
 
         <form method="post" action="/catalog/filter">
-            <a href="/catalog/add">
-                <button class="button2" type="button">New Product</button>
-            </a> &nbsp;&nbsp;&nbsp; Category:
-            <select name="categoryOption">
-                {% for category in categories.categories %}
-                    <option>{{ category.title }}</option>
-                {% endfor %}
-            </select>
-            <input type="submit" class="button2" value="Show">
-            <a href="/catalog">
-                <button class="button2" type="button">Show All</button>
-            </a></p>
+            <table class="table">
+                <tbody style="font-size: 13px">
+                <tr>
+                    <td>
+                        <a href="/catalog/new">
+                            <button class="button2" type="button">New Product</button>
+                        </a>
+                    </td>
+                    <td>
+                        Select Category:
+                        <select name="categoryOption">
+                            {% for category in categories.categories %}
+                                <option>{{ category.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" class="button2" value="Show">
+                        <a href="/catalog">
+                            <button class="button2" type="button">Show All</button>
+                        </a>
+                    </td>
+                    <td><input type="submit" class="button2" value="Filter"></td>
+                    <td>
+                        {% for tag in tags.tags %}
+                            <input type="checkbox" name="product_tags[]" value="{{ tag.id }}"> {{ tag.title }}
+                            <br>
+                        {% endfor %}
+
+                    </td>
+
+
+                </tr>
+                </tbody>
+            </table>
+
 
         </form>
         <p>Click on product ID to edit or remove from list.</p>

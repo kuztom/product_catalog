@@ -5,7 +5,7 @@ namespace App\Middlewares;
 use App\Auth;
 use App\ViewRender;
 
-class AuthorizedMiddleware implements \App\Middlewares\Middleware
+class AuthorizedMiddleware implements Middleware
 {
     public function handle()
     {

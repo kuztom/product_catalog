@@ -6,19 +6,19 @@ use App\Auth;
 use App\Models\Category;
 use App\Repositories\MysqlCategoriesRepository;
 use App\Validation\FormValidationException;
-use App\Validation\FormsValidator;
+use App\Validation\TitleFormsValidator;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
 
 class CategoriesController
 {
     private MysqlCategoriesRepository $categoriesRepository;
-    private FormsValidator $formValidator;
+    private TitleFormsValidator $formValidator;
 
     public function __construct()
     {
         $this->categoriesRepository = new MysqlCategoriesRepository();
-        $this->formValidator = new FormsValidator();
+        $this->formValidator = new TitleFormsValidator();
     }
 
     public function categoryForm()

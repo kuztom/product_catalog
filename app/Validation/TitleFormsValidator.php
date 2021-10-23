@@ -4,7 +4,7 @@ namespace App\Validation;
 
 use App\Validation\FormValidationException;
 
-class FormsValidator
+class TitleFormsValidator
 {
     private array $errors = [];
 
@@ -23,11 +23,6 @@ class FormsValidator
 
         if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $postData['title'])) {
             $this->errors['title_' . $errorCount] = 'Dont use any special characters in input fields!';
-            $errorCount++;
-        }
-
-        if (is_numeric($postData['title'])) {
-            $this->errors['title_' . $errorCount] = 'You cant use only numbers in title!';
             $errorCount++;
         }
 

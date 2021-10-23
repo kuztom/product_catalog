@@ -6,11 +6,13 @@ class ViewRender
 {
     private string $template;
     private array $vars;
+    private array $errors;
 
-    public function __construct(string $template, array $vars = [])
+    public function __construct(string $template, array $vars = [], array $errors = [])
     {
         $this->template = $template;
         $this->vars = $vars;
+        $this->errors = $errors;
     }
 
     public function getTemplate(): string
@@ -32,11 +34,13 @@ class ViewRender
         ]);
     }
 
-    public static function newProduct($categories, $tags)
+    public static function newProduct($categories, $tags, $errors)
     {
         return new ViewRender('Catalog/add.twig', [
             'categories' => $categories,
-            'tags' => $tags
+            'tags' => $tags,
+            'errors' => $errors
+
         ]);
     }
 

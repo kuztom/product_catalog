@@ -8,7 +8,6 @@ use App\Repositories\MysqlCategoriesRepository;
 use App\Repositories\MysqlProductsRepository;
 use App\Repositories\MysqlTagsRepository;
 use App\Validation\FormValidationException;
-use App\Validation\FormsValidator;
 use App\Validation\ProductsValidator;
 use App\ViewRender;
 use Godruoyi\Snowflake\Snowflake;
@@ -18,7 +17,6 @@ class ProductsController
     private MysqlProductsRepository $productsRepository;
     private MysqlCategoriesRepository $categoriesRepository;
     private MysqlTagsRepository $tagsRepository;
-    private FormsValidator $formValidator;
     private ProductsValidator $productsValidator;
 
     public function __construct()
@@ -26,7 +24,6 @@ class ProductsController
         $this->productsRepository = new MysqlProductsRepository();
         $this->categoriesRepository = new MysqlCategoriesRepository();
         $this->tagsRepository = new MysqlTagsRepository();
-        $this->formValidator = new FormsValidator();
         $this->productsValidator = new ProductsValidator();
     }
 
@@ -34,7 +31,7 @@ class ProductsController
     {
         $products = $this->productsRepository->getAll();
         $categories = $this->categoriesRepository->getAll();
-        $tags = $this->tagsRepository->getAll();
+        $tags = $this->tagsRepository->getAvailableTags();
 
         return ViewRender::catalog($products, $categories, $tags);
     }
@@ -51,7 +48,7 @@ class ProductsController
     {
         $products = $this->productsRepository->getCategory($_POST['categoryOption']);
         $categories = $this->categoriesRepository->getAll();
-        $tags = $this->tagsRepository->getAll();
+        $tags = $this->tagsRepository->getAvailableTags();
 
         return ViewRender::catalog($products, $categories, $tags);
     }
@@ -61,7 +58,9 @@ class ProductsController
         if (Auth::loggedIn()) {
             $categories = $this->categoriesRepository->getAll();
             $tags = $this->tagsRepository->getAll();
-            return ViewRender::newProduct($categories, $tags);
+            $_SESSION['errors'] = $this->productsValidator->getErrors();
+            $errors = $_SESSION['errors'];
+            return ViewRender::newProduct($categories, $tags, $errors);
         }
         return ViewRender::login();
     }
@@ -69,8 +68,9 @@ class ProductsController
     public function save()
     {
         try {
+
             $this->productsValidator->validate($_POST);
-            $this->formValidator->validate($_POST);
+
             $id = new Snowflake();
             $product = new Product(
                 $id->id(),
@@ -79,21 +79,21 @@ class ProductsController
                 $_POST['qty'],
                 date('Y-m-d H:i:s'),
                 $_SESSION['username'],
-                date('Y-m-d H:i:s')
+                date('Y-m-d H:i:s'),
+                $_POST['product_tags']
             );
 
             $this->productsRepository->add($product);
+            $this->productsRepository->saveProductTags($product);
 
             return $this->addForm();
+
         } catch (FormValidationException $exception) {
             $_SESSION['errors'] = $this->productsValidator->getErrors();
-            $_SESSION['errors'] = $this->formValidator->getErrors();
+            $errors = $_SESSION['errors'];
             $categories = $this->categoriesRepository->getAll();
             $tags = $this->tagsRepository->getAll();
-            return new ViewRender('Catalog/add.twig', [
-                'errors' => $_SESSION['errors'],
-                'categories' => $categories,
-                'tags' => $tags]);
+            return ViewRender::newProduct($categories, $tags, $errors);
         }
     }
 

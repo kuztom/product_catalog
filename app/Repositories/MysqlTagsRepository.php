@@ -36,6 +36,7 @@ class MysqlTagsRepository implements TagsRepository
             $tag->getId(),
             $tag->getTitle(),
         ]);
+
     }
 
     public function getAll(): TagsCollection
@@ -55,14 +56,22 @@ class MysqlTagsRepository implements TagsRepository
         return $collection;
     }
 
-    public function productsTags(string $productId, string $tagId)
+    public function getAvailableTags(): TagsCollection
     {
-        $sql = "INSERT INTO products_tags (product_id, tag_id) 
-                VALUES (?,?)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute([
-            $tag->getId(),
-            $tag->getTitle(),
-        ]);
+        $sql = "SELECT tag_id, title FROM tags
+                RIGHT JOIN products_tags
+                ON tags.id = products_tags.tag_id";
+        $stmt = $this->connection->query($sql);
+        $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $collection = new TagsCollection();
+        foreach ($tags as $tag) {
+            $collection->add(new Tag(
+                $tag['tag_id'],
+                $tag['title']
+            ));
+        }
+        return $collection;
     }
+
 }
