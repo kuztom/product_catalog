@@ -42,11 +42,6 @@ class ProductsValidator
             $errorCount++;
         }
 
-//        if (!isset($_POST['product_tags'])) {
-//            $this->errors['tags_' . $errorCount] = 'Select at least one tag!';
-//            $errorCount++;
-//        }
-
         if (count($this->errors) > 0) {
             throw new FormValidationException();
         }

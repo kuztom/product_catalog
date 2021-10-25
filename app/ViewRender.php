@@ -57,5 +57,10 @@ class ViewRender
         return new ViewRender('Users/login.twig');
     }
 
+    public static function register()
+    {
+        return new ViewRender('Users/register.twig');
+    }
+
 
 }

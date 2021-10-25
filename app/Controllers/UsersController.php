@@ -52,7 +52,7 @@ class UsersController
         return ViewRender::login();
     }
 
-    public function login()
+    public function login(): ViewRender
     {
 
         $user = $this->usersRepository->find($_POST['username']);
@@ -74,7 +74,7 @@ class UsersController
         }
     }
 
-    public function logout()
+    public function logout(): ViewRender
     {
         session_unset();
         return $this->loginForm();
@@ -85,10 +85,10 @@ class UsersController
         if (Auth::loggedIn()) {
             return $this->catalogRedirect();
         }
-        return new ViewRender('Users/register.twig');
+        return ViewRender::register();
     }
 
-    public function register()
+    public function register(): ViewRender
     {
         try {
             $this->usersValidator->validate($_POST);

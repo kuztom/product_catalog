@@ -21,7 +21,7 @@ class CategoriesController
         $this->formValidator = new TitleFormsValidator();
     }
 
-    public function categoryForm()
+    public function categoryForm(): ViewRender
     {
         if (Auth::loggedIn()) {
             return new ViewRender('Catalog/category.twig');

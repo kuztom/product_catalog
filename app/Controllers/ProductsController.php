@@ -36,7 +36,7 @@ class ProductsController
         return ViewRender::catalog($products, $categories, $tags);
     }
 
-    public function catalog()
+    public function catalog(): ViewRender
     {
         if (Auth::loggedIn()) {
             return $this->catalogRedirect();
@@ -53,7 +53,7 @@ class ProductsController
         return ViewRender::catalog($products, $categories, $tags);
     }
 
-    public function addForm()
+    public function addForm(): ViewRender
     {
         if (Auth::loggedIn()) {
             $categories = $this->categoriesRepository->getAll();
@@ -65,7 +65,7 @@ class ProductsController
         return ViewRender::login();
     }
 
-    public function save()
+    public function save(): ViewRender
     {
         try {
 
@@ -97,7 +97,7 @@ class ProductsController
         }
     }
 
-    public function productForm(array $vars)
+    public function productForm(array $vars): ViewRender
     {
         if (Auth::loggedIn()) {
             $id = $vars['id'];
@@ -108,7 +108,7 @@ class ProductsController
         return ViewRender::login();
     }
 
-    public function editProduct(array $vars)
+    public function editProduct(array $vars): ViewRender
     {
         if (Auth::loggedIn()) {
             $id = $vars['id'];

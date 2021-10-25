@@ -65,16 +65,16 @@ switch ($routeInfo[0]) {
         $vars = $routeInfo[2];
         // ... call $handler with $vars
 
-//        $middlewares = [
-//            'ProductsController@catalog' => [AuthorizedMiddleware::class],
-//            'UsersController@login' => [AuthorizedMiddleware::class],
-//        ];
-//
-//        if (array_key_exists($handler, $middlewares)) {
-//            foreach ($middlewares[$handler] as $middleware) {
-//                (new $middleware)->handle();
-//            }
-//        }
+        $middlewares = [
+            'ProductsController@catalog' => [AuthorizedMiddleware::class],
+            'UsersController@login' => [AuthorizedMiddleware::class],
+        ];
+
+        if (array_key_exists($handler, $middlewares)) {
+            foreach ($middlewares[$handler] as $middleware) {
+                (new $middleware)->handle();
+            }
+        }
 
         [$controller, $method] = explode('@', $handler);
 

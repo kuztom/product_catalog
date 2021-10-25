@@ -21,7 +21,7 @@ class TagsController
         $this->tagsValidator = new TitleFormsValidator();
     }
 
-    public function tagsForm()
+    public function tagsForm(): ViewRender
     {
         if (Auth::loggedIn()) {
             return new ViewRender('Catalog/tag.twig');
@@ -29,7 +29,7 @@ class TagsController
         return ViewRender::login();
     }
 
-    public function save()
+    public function save(): ViewRender
     {
         try {
             $this->tagsValidator->validate($_POST);
