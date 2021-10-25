@@ -3,44 +3,39 @@
 namespace App\Controllers;
 
 use App\Auth;
-use App\Models\Category;
-use App\Repositories\MysqlCategoriesRepository;
+use App\Services\Categories\SaveCategoriesService;
+use App\Services\Categories\SaveCategoriesRequest;
 use App\Validation\FormValidationException;
 use App\Validation\TitleFormsValidator;
 use App\ViewRender;
-use Godruoyi\Snowflake\Snowflake;
 
 class CategoriesController
 {
-    private MysqlCategoriesRepository $categoriesRepository;
     private TitleFormsValidator $formValidator;
+    private SaveCategoriesService $saveCategoriesService;
 
     public function __construct()
     {
-        $this->categoriesRepository = new MysqlCategoriesRepository();
         $this->formValidator = new TitleFormsValidator();
+        $this->saveCategoriesService = new SaveCategoriesService();
     }
 
     public function categoryForm(): ViewRender
     {
         if (Auth::loggedIn()) {
-            return new ViewRender('Catalog/category.twig');
+            return ViewRender::newCategory();
         }
         return ViewRender::login();
     }
 
     public function save(): ViewRender
     {
+        $categoryTitle = $_POST['title'];
         try {
             $this->formValidator->validate($_POST);
-            $id = new Snowflake();
-            $category = new Category(
-                $id->id(),
-                $_POST['title']
-            );
-            $this->categoriesRepository->add($category);
+            $this->saveCategoriesService->execute(new SaveCategoriesRequest($categoryTitle));
 
-            return new ViewRender('Catalog/category.twig');
+            return ViewRender::newCategory();
 
         } catch (FormValidationException $exception) {
             $_SESSION['errors'] = $this->formValidator->getErrors();

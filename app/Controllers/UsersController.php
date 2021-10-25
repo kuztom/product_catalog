@@ -3,19 +3,19 @@
 namespace App\Controllers;
 
 use App\Auth;
-use App\Models\User;
 use App\Repositories\MysqlCategoriesRepository;
 use App\Repositories\MysqlProductsRepository;
 use App\Repositories\MysqlTagsRepository;
-use App\Repositories\MysqlUsersRepository;
+use App\Services\Users\UsersLoginRequest;
+use App\Services\Users\UsersLoginService;
+use App\Services\Users\UsersRegisterRequest;
+use App\Services\Users\UsersRegisterService;
 use App\Validation\FormValidationException;
 use App\Validation\UsersValidator;
 use App\ViewRender;
-use Godruoyi\Snowflake\Snowflake;
 
 class UsersController
 {
-    private MysqlUsersRepository $usersRepository;
     private MysqlProductsRepository $productsRepository;
     private MysqlCategoriesRepository $categoriesRepository;
     private MysqlTagsRepository $tagsRepository;
@@ -23,7 +23,6 @@ class UsersController
 
     public function __construct()
     {
-        $this->usersRepository = new MysqlUsersRepository();
         $this->productsRepository = new MysqlProductsRepository();
         $this->categoriesRepository = new MysqlCategoriesRepository();
         $this->tagsRepository = new MysqlTagsRepository();
@@ -32,7 +31,7 @@ class UsersController
 
     public function index(): ViewRender
     {
-        return new ViewRender('index.twig');
+        return ViewRender::frontPage();
     }
 
     public function catalogRedirect(): ViewRender
@@ -54,21 +53,17 @@ class UsersController
 
     public function login(): ViewRender
     {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
 
-        $user = $this->usersRepository->find($_POST['username']);
+        $response = new UsersLoginService();
 
-        if ($user !== null && password_verify($_POST['password'], $user->getPassword())) {
-            $_SESSION['username'] = $user->getUsername();
+        if ($response->execute(new UsersLoginRequest($username, $password)) !== null) {
+            $_SESSION['username'] = $username;
             $products = $this->productsRepository->getAll();
             $categories = $this->categoriesRepository->getAll();
             $tags = $this->tagsRepository->getAll();
-            return new ViewRender('catalog/catalog.twig', [
-
-                'products' => $products,
-                'categories' => $categories,
-                'tags' => $tags
-            ]);
-
+            return ViewRender::catalog($products, $categories, $tags);
         } else {
             return ViewRender::login();
         }
@@ -90,16 +85,13 @@ class UsersController
 
     public function register(): ViewRender
     {
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         try {
             $this->usersValidator->validate($_POST);
-            $id = new Snowflake();
-            $user = new User(
-                $id->id(),
-                $_POST['username'],
-                $_POST['email'],
-                password_hash($_POST['password'], PASSWORD_DEFAULT));
-
-            $this->usersRepository->add($user);
+            (new UsersRegisterService())->execute(
+                new UsersRegisterRequest($username, $email, $password));
 
             return ViewRender::login();
         } catch (FormValidationException $exception) {

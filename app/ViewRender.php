@@ -62,5 +62,18 @@ class ViewRender
         return new ViewRender('Users/register.twig');
     }
 
+    public static function newTag()
+    {
+        return new ViewRender('Catalog/tag.twig');
+    }
 
+    public static function newCategory()
+    {
+        return new ViewRender('Catalog/category.twig');
+    }
+
+    public static function frontPage()
+    {
+        return new ViewRender('index.twig');
+    }
 }

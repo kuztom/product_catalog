@@ -3,14 +3,18 @@
 namespace App\Controllers;
 
 use App\Auth;
-use App\Models\Product;
 use App\Repositories\MysqlCategoriesRepository;
 use App\Repositories\MysqlProductsRepository;
 use App\Repositories\MysqlTagsRepository;
+use App\Services\Products\DeleteProductsRequest;
+use App\Services\Products\DeleteProductsService;
+use App\Services\Products\EditProductsRequest;
+use App\Services\Products\EditProductsService;
+use App\Services\Products\SaveProductsRequest;
+use App\Services\Products\SaveProductsService;
 use App\Validation\FormValidationException;
 use App\Validation\ProductsValidator;
 use App\ViewRender;
-use Godruoyi\Snowflake\Snowflake;
 
 class ProductsController
 {
@@ -67,24 +71,19 @@ class ProductsController
 
     public function save(): ViewRender
     {
+        $title = $_POST['title'];
+        $categoryOption = $_POST['categoryOption'];
+        $qty = $_POST['qty'];
+        $createdBy = $_SESSION['username'];
+        $tags = $_POST['product_tags'];
+
         try {
 
             $this->productsValidator->validate($_POST);
 
-            $id = new Snowflake();
-            $product = new Product(
-                $id->id(),
-                $_POST['title'],
-                $_POST['categoryOption'],
-                $_POST['qty'],
-                date('Y-m-d H:i:s'),
-                $_SESSION['username'],
-                date('Y-m-d H:i:s'),
-                $_POST['product_tags']
+            (new SaveProductsService())->execute(
+                new SaveProductsRequest($title, $categoryOption, $qty, $createdBy, $tags)
             );
-
-            $this->productsRepository->add($product);
-            $this->productsRepository->saveProductTags($product);
 
             return $this->addForm();
 
@@ -114,7 +113,9 @@ class ProductsController
             $id = $vars['id'];
 
             if ($_POST['action'] === 'Save') {
-                $this->productsRepository->saveEdit($id);
+                (new EditProductsService())->execute(
+                    new EditProductsRequest($id)
+                );
 
                 $product = $this->productsRepository->getOne($id);
                 $categories = $this->categoriesRepository->getAll();
@@ -123,11 +124,13 @@ class ProductsController
             }
 
             if ($_POST['action'] === 'Delete') {
-                $this->productsRepository->delete($id);
+                (new DeleteProductsService())->execute(
+                    new DeleteProductsRequest($id)
+                );
+
                 return $this->catalog();
             }
         }
         return ViewRender::login();
     }
-
 }
