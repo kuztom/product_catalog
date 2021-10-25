@@ -67,7 +67,11 @@ switch ($routeInfo[0]) {
 
         $middlewares = [
             'ProductsController@catalog' => [AuthorizedMiddleware::class],
-            'UsersController@login' => [AuthorizedMiddleware::class],
+            'ProductsController@productForm' => [AuthorizedMiddleware::class],
+            'ProductsController@editProduct' => [AuthorizedMiddleware::class],
+            'ProductsController@addForm' => [AuthorizedMiddleware::class],
+            'CategoriesController@categoryForm' => [AuthorizedMiddleware::class],
+            'TagsController@tagsForm' => [AuthorizedMiddleware::class],
         ];
 
         if (array_key_exists($handler, $middlewares)) {

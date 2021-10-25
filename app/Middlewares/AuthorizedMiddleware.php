@@ -9,7 +9,7 @@ class AuthorizedMiddleware implements Middleware
 {
     public function handle()
     {
-        if (!Auth::loggedIn()) {
+        if (! Auth::loggedIn()) {
              ViewRender::login();
         }
     }
